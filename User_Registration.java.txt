@@ -1,0 +1,46 @@
+packagecom.servlets;
+
+importjavax.servlet.annotation.WebServlet;
+importjava.io.IOException;
+importjava.sql.SQLException;
+importjava.util.HashMap;
+importjavax.servlet.ServletException;
+importjavax.servlet.http.HttpServlet;
+importjavax.servlet.http.HttpServletRequest;
+importjavax.servlet.http.HttpServletResponse;
+importjavax.servlet.http.HttpSession;
+importcom.database.Dao;
+
+@WebServlet("/UserRegistration")
+publicclassUserRegistrationextendsHttpServlet {
+    privatestaticfinallongserialVersionUID = 1L;
+    protectedvoiddoPost(HttpServletRequestrequest, HttpServletResponseresponse) throwsServletException, IOException {
+        Stringemail=request.getParameter("email");
+        Stringpassword=request.getParameter("password");
+        Stringname=request.getParameter("name");
+        Stringphno=request.getParameter("phno");
+        Stringadno=request.getParameter("adno");
+        
+        HashMap<String,String>user=newHashMap<>();
+        user.put("email", email);
+        user.put("password", password);
+        user.put("name", name);
+        user.put("phno", phno);
+        user.put("adno", adno);
+        
+        try {
+            Daodao=newDao();
+            booleanresult=dao.insertUser(user);
+            HttpSessionsession=request.getSession();
+            if(result) {
+                session.setAttribute("message", "User Added Successfully");
+            }
+            else {
+                session.setAttribute("message","Invalid Details");
+            }
+        } catch (ClassNotFoundException | SQLExceptione) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        response.sendRedirect("UserPage.jsp");
+    }

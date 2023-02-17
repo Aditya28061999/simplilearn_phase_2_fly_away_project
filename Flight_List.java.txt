@@ -1,0 +1,36 @@
+packagecom.servlets;
+
+importjava.io.IOException;
+importjava.sql.SQLException;
+importjava.util.List;
+importjavax.servlet.ServletException;
+importjavax.servlet.annotation.WebServlet;
+importjavax.servlet.http.HttpServlet;
+importjavax.servlet.http.HttpServletRequest;
+importjavax.servlet.http.HttpServletResponse;
+importjavax.servlet.http.HttpSession;
+importcom.database.Dao;
+
+@WebServlet("/FlightList")
+publicclassFlightListextendsHttpServlet {
+    privatestaticfinallongserialVersionUID = 1L;
+    
+    protectedvoiddoPost(HttpServletRequestrequest, HttpServletResponseresponse) throwsServletException, IOException {
+        
+        Stringfrom=request.getParameter("from");
+        Stringto=request.getParameter("to");
+        Stringdeparture=request.getParameter("departure");
+        
+        try {
+            Daodao = newDao();
+            List<String[]>flights=dao.getAvailableFlights(from, to, departure);            
+            HttpSessionsession=request.getSession();
+            session.setAttribute("flights", flights);
+            
+        } catch (ClassNotFoundException | SQLExceptione) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        response.sendRedirect("FlightList.jsp");
+    }
+}
